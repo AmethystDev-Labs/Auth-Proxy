@@ -120,6 +120,10 @@ The preview release workflow is defined in [preview-release.yml](.github/workflo
 - `internal/web`: embedded frontend assets
 - `web`: React + Vite frontend source
 
+## Community
+
+Linux.do
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE).
