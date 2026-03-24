@@ -1,7 +1,9 @@
 package logging
 
 import (
+	"bufio"
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -74,6 +76,34 @@ func SetAuthenticated(ctx context.Context, authenticated bool) {
 func (r *responseRecorder) WriteHeader(statusCode int) {
 	r.status = statusCode
 	r.ResponseWriter.WriteHeader(statusCode)
+}
+
+func (r *responseRecorder) Unwrap() http.ResponseWriter {
+	return r.ResponseWriter
+}
+
+func (r *responseRecorder) Flush() {
+	flusher, ok := r.ResponseWriter.(http.Flusher)
+	if !ok {
+		return
+	}
+	flusher.Flush()
+}
+
+func (r *responseRecorder) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	hijacker, ok := r.ResponseWriter.(http.Hijacker)
+	if !ok {
+		return nil, nil, fmt.Errorf("response writer does not support hijacking: %w", http.ErrNotSupported)
+	}
+	return hijacker.Hijack()
+}
+
+func (r *responseRecorder) Push(target string, opts *http.PushOptions) error {
+	pusher, ok := r.ResponseWriter.(http.Pusher)
+	if !ok {
+		return http.ErrNotSupported
+	}
+	return pusher.Push(target, opts)
 }
 
 func requestPath(r *http.Request) string {
