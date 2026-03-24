@@ -1,0 +1,7 @@
+/bin/
+/coverage.out
+/.gocache/
+/.gomodcache/
+/.superpowers/
+/web/node_modules/
+*.log
