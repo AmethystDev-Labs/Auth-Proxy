@@ -95,6 +95,20 @@ go test ./...
 go build -o .\\bin\\authproxy.exe .\\cmd\\authproxy
 ```
 
+## CI/CD
+
+GitHub Actions now runs on every branch `push` and performs the full preview pipeline:
+
+- `npm ci`, `npm test`, and `npm run build` in [`web`](web)
+- `go test ./... -count=1`
+- cross-compiles release archives for:
+  - Linux `amd64` and `arm64`
+  - macOS `amd64` and `arm64`
+  - Windows `amd64` and `arm64`
+- publishes a GitHub prerelease named like `preview-main-r12-a1-abcdef0`
+
+The preview release workflow is defined in [preview-release.yml](.github/workflows/preview-release.yml). Every generated release is marked as a prerelease and explicitly created with `--latest=false`, so it does not take over the repository's Latest release slot.
+
 ## Repository Layout
 
 - `cmd/authproxy`: executable entrypoint
